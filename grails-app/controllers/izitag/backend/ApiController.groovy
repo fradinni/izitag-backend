@@ -4,7 +4,7 @@ import grails.converters.JSON
 
 class ApiController {
 
-    static allowedMethods = [addTag: "POST", addAction: : "POST"]
+    static allowedMethods = [addTag: "POST", addAction : "POST"]
 
     // /api/addTag?tagId=aaaa&name=tata
     def addTag() {
