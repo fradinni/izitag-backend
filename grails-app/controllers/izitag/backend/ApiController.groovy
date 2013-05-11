@@ -27,8 +27,7 @@ class ApiController {
            render(user.merchants as JSON)
         }
         else {
-            def merchantList = Merchant.findAll()
-            render(merchantList as JSON)
+            render(Merchant.list() as JSON)
         }
     }
     //  /api/reward?rewardId=1 (optionnal)
