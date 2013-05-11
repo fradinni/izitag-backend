@@ -16,6 +16,34 @@ class ApiController {
     // Liste des codes promos non utilisés par userId (le retour JSON doit contenir les infos du merchant)
 
 
+    // /api/merchantList?userId=1 (optionnal)
+    def merchantList(){
+        if(params.userId){
+            def user = User.findById(params.userId)
+            if(!user) {
+                render([userNotExists:true] as JSON)
+                return
+            }
+           render(user.merchants as JSON)
+        }
+        else {
+            def merchantList = Merchant.findAll()
+            render(merchantList as JSON)
+        }
+    }
+    //  /api/reward?rewardId=1 (optionnal)
+    def reward() {
+        if(!params.rewardId){
+            render([missingParameter:"rewardId"] as JSON)
+            return
+        }
+
+        def reward = Reward.get(params.rewardId)
+        if (!reward){
+            render([objectNotFound : "reward"])
+        }
+        render(reward as JSON)
+    }
 
     // /api/addTag?tagId=aaaa&name=tata&userId=1
     /*def addTag() {

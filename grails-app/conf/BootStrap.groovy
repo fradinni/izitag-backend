@@ -34,10 +34,11 @@ class BootStrap {
         if (!firstUser)
         {
             firstUser = new User(email : "damien.pacaud@gmail.com", password: "test")
+            firstUser.addToMerchants(firstMerchant)
             firstUser.save(flush: true, failOnError: true)
         }
 
-        codePromoService.createCodePromo(firstUser, firstMerchant)
+        //codePromoService.createCodePromo(firstUser, firstMerchant)
 
     }
 
