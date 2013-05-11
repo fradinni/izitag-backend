@@ -9,7 +9,6 @@ class ApiController {
 
     // Infos sur un commercant par id (plus le nombre de checkins pour ce user chez ce commercant et le treshold pour ce tag)
 
-    // codePromo (code unique) Lorsque le treshold est atteint, on génere le code promo unique lié au commercant et au user et on le renvoi en réposne dans le JSon du checkin
     // Liste des codes promos non utilisés par userId (le retour JSON doit contenir les infos du merchant)
 
 
@@ -67,9 +66,10 @@ class ApiController {
             return
         }
 
-        def event = Event.findByUserAndTagAndEndDateIsNull(user,tag)
+        def event = Event.findByIsCurrentAndUserAndTag(true,user,tag)
+
         if (!event){
-            event = new Event(user : user, tag : tag)
+            event = new Event(user : user, tag : tag, isCurrent: true)
             println "event tag " + event.tag
             event.counter++
             event.save(flush: true, failOnError: true)
@@ -77,28 +77,40 @@ class ApiController {
         }
         else {
             if(event.counter == (tag.treshold -1)) {
-                println "sending mail"
-                sendMail {
+                //println "sending mail"
+               /* sendMail {
                     from "serty2@gmail.com"
                     to user.email
                     subject "Vous avez une nouvelle promotion chez ${tag.merchant.name}"
                     body "Votre promotion est la suivante : ${tag.merchant.reward.description}"
-                }
+                }*/
 
             }
+
             if(event.counter >= tag.treshold) {
                 // TODO : SEND A MAIL
                 def codePromo = codePromoService.createCodePromo(user,tag.merchant)
                 event.endDate = new Date()
+                event.isCurrent = false
+                event.save(flush: true,failOnError: true)
                 def response = [codePromo:codePromo, event:event, tag: tag]
                 render response as JSON
                 return
             }
             else {
                 event.counter++
+                event.save(flush: true,failOnError: true)
+                render([event:event, tag:tag] as JSON)
             }
-            event.save(flush: true,failOnError: true)
-            render([event:event, tag:tag] as JSON)
+        }
+    }
+
+    def testMail(){
+        sendMail {
+            from "serty2@gmail.com"
+            to "damien.pacaud@gmail.com"
+            subject "Vous avez une nouvelle promotion chez "
+            body "Votre promotion est la suivante :"
         }
     }
     // /api/addTag?tagId=aaaa&name=tata&userId=1

@@ -13,6 +13,8 @@ class Event {
 
     Tag tag
 
+    boolean isCurrent
+
     //static hasOne = [tamere : Tag , user : User ]
 
 
