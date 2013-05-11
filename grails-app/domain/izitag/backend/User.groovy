@@ -7,6 +7,7 @@ class User {
     static hasMany = [actions : Action, events : Event, tags : Tag]
 
     static constraints = {
+        actions nullable: true
     }
 
     static mapping = {

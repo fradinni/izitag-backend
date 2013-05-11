@@ -79,6 +79,7 @@ class ApiController {
             subject "test mailjet"
             body 'bouya'
         } */
+
         render (tags as JSON)
     }
 
@@ -134,5 +135,54 @@ class ApiController {
 
     def addTagsToAction () {
 
+
+    }
+
+    // /api/addEvent?tagId=tagId&userId=1
+    def addEvent() {
+
+        if(!params.tagId){
+            render([missingMandatoryParameter:"tagId"] as JSON)
+            return
+        }
+        if(!params.userId){
+            render([missingMandatoryParameter:"userId"] as JSON)
+            return
+        }
+
+        def user = User.findById(params.userId)
+
+        if(!user){
+            render([userNotExists:true] as JSON)
+            return
+        }
+
+        def tag = Tag.findByTagID(params.tagId)
+
+        if(!tag){
+            // Le tag n'existe pas, il faut le créer
+            render([tagExists : false] as JSON)
+            return
+        }
+        def action = Action.findById(tag.actionId)
+        if(!action) {
+            render([actionAssociatedToTag:false , tag : tag ])
+            return
+        }
+        if(action.type == "DURATION"){
+            def myEvent = Event.findByUserAndActionAndEndDateIsEmpty(user,action)
+            if(myEvent){
+                println "event found"
+                myEvent.endDate = new Date()
+            }
+            else {
+                println "event not found -  creating one"
+                myEvent = new Event()
+            }
+
+        }
+        else if(action.type == "COUNTER"){
+            def event = new Event(user : user, action : action)
+        }
     }
 }

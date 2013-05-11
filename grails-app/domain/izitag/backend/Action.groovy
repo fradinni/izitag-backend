@@ -9,6 +9,8 @@ class Action {
     // TYPE is : COUNTER or DURATION
     String type
 
+    List<Tag> tags
+
     static hasMany = [tags : Tag]
 
     static constraints = {
