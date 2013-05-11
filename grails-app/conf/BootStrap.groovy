@@ -25,6 +25,7 @@ class BootStrap {
         {
             firstUser = new User(name: "Damien")
             firstUser.addToActions(firstAction)
+            firstUser.addToTags(firstTag)
             firstUser.save(flush: true)
         }
 
