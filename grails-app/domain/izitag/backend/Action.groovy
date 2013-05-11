@@ -2,6 +2,10 @@ package izitag.backend
 
 class Action {
 
+    String name
+
+    String description
+
     // TYPE is : COUNTER or DURATION
     String type
 
