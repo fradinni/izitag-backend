@@ -4,10 +4,9 @@ import grails.converters.JSON
 
 class ApiController {
 
-    static allowedMethods = [merchantList: "GET", reward: "GET", checkin: "POST"]
-    CodePromoService codePromoService
+    static allowedMethods = [merchantList: "GET", reward: "GET", checkin: "POST", testMail: "GET", merchant: "GET"]
 
-    // Infos sur un commercant par id (plus le nombre de checkins pour ce user chez ce commercant et le treshold pour ce tag)
+    CodePromoService codePromoService
 
     // Liste des codes promos non utilisés par userId (le retour JSON doit contenir les infos du merchant)
 
@@ -27,7 +26,45 @@ class ApiController {
         }
     }
 
-    //  /api/reward?rewardId=1 (optionnal)
+    //  /api/merchant?merchantId=1&userId=1
+    def merchant() {
+        if(!params.merchantId){
+            render([missingParameter:"merchantId"] as JSON)
+            return
+        }
+        def merchant = Merchant.findById(params.merchantId)
+
+        if(!merchant){
+            render([objectNotFound : "merchant"])
+            return
+        }
+        //Tried everything, I think Eager fetching ain't working with mongodb plugin...
+        //gotta do what u gotta do....
+        def tag = Tag.get(merchant.tag.id)
+
+        // On commence à construire la réponse.
+        def response = [merchant : merchant , tag: tag]
+        def event
+        if(params.userId){
+
+            def user = User.findById(params.userId)
+            if (!user){
+                render([userNotExists:true] as JSON)
+                return
+            }
+            event = Event.findByIsCurrentAndUserAndTag(true,user,tag)
+            if (!event){
+                render([noEventForUserWithMerchant:true] as JSON)
+                return
+            }
+            else {
+                response += [event : event]
+            }
+        }
+        render response as JSON
+    }
+
+    //  /api/reward?rewardId=1
     def reward() {
         if(!params.rewardId){
             render([missingParameter:"rewardId"] as JSON)
@@ -37,6 +74,7 @@ class ApiController {
         def reward = Reward.get(params.rewardId)
         if (!reward){
             render([objectNotFound : "reward"])
+            return
         }
         render(reward as JSON)
     }
@@ -78,12 +116,12 @@ class ApiController {
         else {
             if(event.counter == (tag.treshold -1)) {
                 //println "sending mail"
-               /* sendMail {
+                sendMail {
                     from "serty2@gmail.com"
                     to user.email
                     subject "Vous avez une nouvelle promotion chez ${tag.merchant.name}"
                     body "Votre promotion est la suivante : ${tag.merchant.reward.description}"
-                }*/
+                }
 
             }
 
@@ -108,9 +146,9 @@ class ApiController {
     def testMail(){
         sendMail {
             from "serty2@gmail.com"
-            to "damien.pacaud@gmail.com"
-            subject "Vous avez une nouvelle promotion chez "
-            body "Votre promotion est la suivante :"
+            to "fradinni@gmail.com"
+            subject "Ceci est un test !!"
+            body "bou"
         }
     }
     // /api/addTag?tagId=aaaa&name=tata&userId=1
