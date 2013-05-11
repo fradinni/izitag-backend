@@ -4,18 +4,20 @@ import grails.converters.JSON
 
 class ApiController {
 
-    static allowedMethods = [addTag: "POST", addAction : "POST"]
+    static allowedMethods = [addTag: "POST", addAction : "POST", getTags: "GET"]
 
-    // /api/addTag?tagId=aaaa&name=tata
+    // /api/addTag?tagId=aaaa&name=tata&userId=1
     def addTag() {
-        log.debug params.tagId
-        log.debug params.name
-        log.debug params.userId
+
+        println "tagId : ${params.tagId}"
+        println "name : ${params.name}"
+        println "userId : ${params.userId}"
 
         def user = User.findById(params.userId)
 
         if(!user){
             render([message : "User does not exist"] as JSON)
+            return
         }
 
         def tag = Tag.findByTagId(params.tagId)
@@ -24,8 +26,9 @@ class ApiController {
             render([message : "Tag already exists"] as JSON)
         }
         else {
-            tag = new Tag(name : params.name , tagID : params.tagId , user : user)
-            if(!tag.save()){
+            tag = new Tag(name : params.name , tagID : params.tagId )
+            user.addToTags(tag)
+            if(!tag.save() || !user.save()){
                 log.error "There was an error while saving tag : [${params.tagId} - ${params.name}]"
                 tag.errors.each {
                     println it
@@ -36,11 +39,28 @@ class ApiController {
         }
     }
 
+    // /apigetTags?userId=1
+    def getTags(){
+        println "---- userId : ${params.userId}"
+
+        def user = User.findById(params.userId)
+
+        if(!user){
+            render([message : "User does not exist"] as JSON)
+            return
+        }
+
+        def tags = Tag.findAllByUser(user)
+
+        render (tags as JSON)
+    }
+
+
     def addAction() {
-        log.debug params.type
-        log.debug params.name
-        log.debug params.description
-        log.debug params.userId
+        println "type : ${params.type}"
+        println "name : ${params.name}"
+        println "description : ${params.description}"
+        println "userId : ${params.userId}"
 
         //def action = new
     }
