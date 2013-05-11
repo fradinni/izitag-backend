@@ -4,14 +4,11 @@ import grails.converters.JSON
 
 class ApiController {
 
-    static allowedMethods = []
-
-    // liste des commercants
+    static allowedMethods = [merchantList: "GET", reward: "GET", checkin: "POST"]
+    CodePromoService codePromoService
 
     // Infos sur un commercant par id (plus le nombre de checkins pour ce user chez ce commercant et le treshold pour ce tag)
 
-    // Chekin par tagId : lorsqu'on checkin on incrément un compteur jusquà un treshold
-    // Arrivé au treshold, on reset le compteur apres avoir crée un code promo
     // codePromo (code unique) Lorsque le treshold est atteint, on génere le code promo unique lié au commercant et au user et on le renvoi en réposne dans le JSon du checkin
     // Liste des codes promos non utilisés par userId (le retour JSON doit contenir les infos du merchant)
 
@@ -30,6 +27,7 @@ class ApiController {
             render(Merchant.list() as JSON)
         }
     }
+
     //  /api/reward?rewardId=1 (optionnal)
     def reward() {
         if(!params.rewardId){
@@ -44,6 +42,65 @@ class ApiController {
         render(reward as JSON)
     }
 
+
+    // Chekin par tagId : lorsqu'on checkin on incrément un compteur jusquà un treshold
+    // Arrivé au treshold, on reset le compteur apres avoir crée un code promo
+    //  /api/checkin?tagId=AZERTYUIOP&userId=1
+    def checkin(){
+        if(!params.tagId){
+            render([missingParameter:"tagId"] as JSON)
+            return
+        }
+        if(!params.userId){
+            render([missingParameter:"userId"] as JSON)
+            return
+        }
+        def user = User.findById(params.userId)
+
+        if (!user){
+            render([userNotExists:true] as JSON)
+            return
+        }
+        def tag = Tag.findByTagId(params.tagId)
+        if (!tag) {
+            render([tagNotExists:true] as JSON)
+            return
+        }
+
+        def event = Event.findByUserAndTagAndEndDateIsNull(user,tag)
+        if (!event){
+            event = new Event(user : user, tag : tag)
+            println "event tag " + event.tag
+            event.counter++
+            event.save(flush: true, failOnError: true)
+            render([event:event, tag:tag] as JSON)
+        }
+        else {
+            if(event.counter == (tag.treshold -1)) {
+                println "sending mail"
+                sendMail {
+                    from "serty2@gmail.com"
+                    to user.email
+                    subject "Vous avez une nouvelle promotion chez ${tag.merchant.name}"
+                    body "Votre promotion est la suivante : ${tag.merchant.reward.description}"
+                }
+
+            }
+            if(event.counter >= tag.treshold) {
+                // TODO : SEND A MAIL
+                def codePromo = codePromoService.createCodePromo(user,tag.merchant)
+                event.endDate = new Date()
+                def response = [codePromo:codePromo, event:event, tag: tag]
+                render response as JSON
+                return
+            }
+            else {
+                event.counter++
+            }
+            event.save(flush: true,failOnError: true)
+            render([event:event, tag:tag] as JSON)
+        }
+    }
     // /api/addTag?tagId=aaaa&name=tata&userId=1
     /*def addTag() {
 

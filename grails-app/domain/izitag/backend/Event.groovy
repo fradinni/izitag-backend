@@ -5,11 +5,19 @@ class Event {
 
     Date dateCreated
 
-    static hasOne = [user : User, tag : Tag ]
+    Date endDate
+
+    int counter = 0
+
+    User user
+
+    Tag tag
+
+    //static hasOne = [tamere : Tag , user : User ]
 
 
     static constraints = {
-
+        endDate nullable: true
     }
 
     static mapping = {

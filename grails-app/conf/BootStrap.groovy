@@ -37,8 +37,25 @@ class BootStrap {
             firstUser.addToMerchants(firstMerchant)
             firstUser.save(flush: true, failOnError: true)
         }
+        /***************/
+        // Ajout Starbucks
+        def secondMerchant = Merchant.findByName("Starbucks Opéra")
+        if(!secondMerchant) {
+            secondMerchant = new Merchant(name:"Starbucks Opéra" ,adress: "26 Avenue de l'Opéra", codePostal: "75009" , city: "Paris" , imgUrl:"http://freethoughtblogs.com/taslima/files/2012/10/starbucks-coffee-logo.gif" )
+            secondMerchant.save(flush: true, failOnError: true)
+        }
+        def secondReward = Reward.findByName("Fidelite Starbucks Opéra")
+        if (!secondReward) {
+            secondReward = new Reward(name: "Fidelite Starbucks Opéra", description:  "Lorsque vous débloquez ce reward, nous vous offrons un café gratuit", isActif: true)
+            secondReward.merchant = secondMerchant
+            secondReward.save(flush: true, failOnError: true)
+        }
 
-        //codePromoService.createCodePromo(firstUser, firstMerchant)
+        def secondTag = Tag.findByTagId("BOUYASTARBUCKS")
+        if (!secondTag){
+            secondTag =  new Tag(tagId: "BOUYASTARBUCKS" , name: "Tag Fidelité Starbucks Opéra", merchant: secondMerchant, treshold : 3 )
+            secondTag.save(flush: true, failOnError: true)
+        }
 
     }
 
