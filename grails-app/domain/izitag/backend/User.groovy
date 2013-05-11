@@ -2,12 +2,19 @@ package izitag.backend
 
 class User {
 
-    String name
+    String email
 
-    static hasMany = [actions : Action, events : Event, tags : Tag]
+    String password
+
+    List<Event> events
+
+    List<Merchant> merchants
+
+    static hasMany = [events : Event , merchants : Merchant]
 
     static constraints = {
-        actions nullable: true
+        merchants nullable: true
+        events nullable: true
     }
 
     static mapping = {

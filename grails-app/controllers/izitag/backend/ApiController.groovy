@@ -4,14 +4,25 @@ import grails.converters.JSON
 
 class ApiController {
 
-    static allowedMethods = [addTag: "POST", addAction : "POST", getTags: "GET", addTagsToAction: "POST"]
+    static allowedMethods = []
+
+    // liste des commercants
+
+    // Infos sur un commercant par id (plus le nombre de checkins pour ce user chez ce commercant et le treshold pour ce tag)
+
+    // Chekin par tagId : lorsqu'on checkin on incrément un compteur jusquà un treshold
+    // Arrivé au treshold, on reset le compteur apres avoir crée un code promo
+    // codePromo (code unique) Lorsque le treshold est atteint, on génere le code promo unique lié au commercant et au user et on le renvoi en réposne dans le JSon du checkin
+    // Liste des codes promos non utilisés par userId (le retour JSON doit contenir les infos du merchant)
+
+
 
     // /api/addTag?tagId=aaaa&name=tata&userId=1
-    def addTag() {
+    /*def addTag() {
 
         println "tagId : ${params.tagId}"
         println "name : ${params.name}"
-        println "userId : ${params.userId}"
+        println "userId : ${params.merchantId}"
 
         if(!params.tagId){
             render([missingMandatoryParameter:"tagId"] as JSON)
@@ -21,23 +32,23 @@ class ApiController {
             render([missingMandatoryParameter:"name"] as JSON)
             return
         }
-        if(!params.userId){
-            render([missingMandatoryParameter:"userId"] as JSON)
+        if(!params.merchantId){
+            render([missingMandatoryParameter:"merchantId"] as JSON)
             return
         }
 
 
-        def user = User.findById(params.userId)
+        def merchant = Merchant.findById(params.merchantId)
 
-        if(!user){
-            render([userNotExists:true] as JSON)
+        if(!merchant){
+            render([merchantNotExists:true] as JSON)
             return
         }
 
-        def tag = Tag.findByTagID(params.tagId)
+        def tag = Tag.findByTagId(params.tagId)
 
         if(tag){
-            render([tagExists : true] as JSON)
+            render([tagAlreadyExists : true] as JSON)
         }
         else {
             tag = new Tag(name : params.name , tagID : params.tagId )
@@ -55,7 +66,8 @@ class ApiController {
             render ([tag: tag , message : "tag created : [${params.tagId} - ${params.name}]"] as JSON)
         }
     }
-
+    */
+    /*
     // /apigetTags?userId=1
     def getTags(){
         println "---- userId : ${params.userId}"
@@ -65,7 +77,7 @@ class ApiController {
             return
         }
 
-        def user = User.findById(params.userId)
+        def user = Merchant.findById(params.userId)
 
         if(!user){
             render([userNotExists:true] as JSON)
@@ -73,16 +85,12 @@ class ApiController {
         }
 
         def tags = Tag.findAllByUser(user)
-        /* sendMail {
-            from "serty2@gmail.com"
-            to "damien.pacaud@gmail.com"
-            subject "test mailjet"
-            body 'bouya'
-        } */
+
 
         render (tags as JSON)
     }
-
+    */
+    /*
      // /api/addTag?type=COUNTER&name=tata&description=whatever&userId=1
     def addAction() {
         println "type : ${params.type}"
@@ -103,7 +111,7 @@ class ApiController {
             return
         }
 
-        def user = User.findById(params.userId)
+        def user = Merchant.findById(params.userId)
 
         if(!user){
             render([userNotExists:true] as JSON)
@@ -150,7 +158,7 @@ class ApiController {
             return
         }
 
-        def user = User.findById(params.userId)
+        def user = Merchant.findById(params.userId)
 
         if(!user){
             render([userNotExists:true] as JSON)
@@ -185,4 +193,11 @@ class ApiController {
             def event = new Event(user : user, action : action)
         }
     }
+     */
+    /* sendMail {
+            from "serty2@gmail.com"
+            to "damien.pacaud@gmail.com"
+            subject "test mailjet"
+            body 'bouya'
+        } */
 }

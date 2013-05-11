@@ -4,19 +4,12 @@ class Event {
 
 
     Date dateCreated
-    Date dateUpdated
 
-    Date startDate
-    Date endDate
-
-
-
-    static hasOne = [user : User , action : Action]
+    static hasOne = [user : User, tag : Tag ]
 
 
     static constraints = {
-       startDate nullable: true
-       endDate   nullable: true
+
     }
 
     static mapping = {

@@ -2,16 +2,16 @@ package izitag.backend
 
 class Tag {
 
-    String tagID
+    String tagId
 
     String name
 
-    static hasOne = [user : User , action : Action]
+    int treshold
+
+    static belongsTo = [ merchant : Merchant ]
 
 
     static constraints = {
-       user nullable: true
-       action nullable: true
     }
 
     static mapping = {
