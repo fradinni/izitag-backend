@@ -1,12 +1,12 @@
 package izitag.backend
 
-class User {
+class Tag {
 
-    String name
-
-    static hasMany = [actions : Action, events:Event]
+    String tagID
+    String Name
 
     static constraints = {
+
     }
 
     static mapping = {

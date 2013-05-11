@@ -1,15 +1,16 @@
 package izitag.backend
 
-class User {
+class Event {
 
-    String name
-
-    static hasMany = [actions : Action, events:Event]
+    Date dateCreated
+    Date dateUpdated
 
     static constraints = {
+
     }
 
     static mapping = {
         version false
     }
 }
+
