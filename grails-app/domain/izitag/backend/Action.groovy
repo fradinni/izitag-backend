@@ -12,7 +12,7 @@ class Action {
     static hasMany = [tags : Tag]
 
     static constraints = {
-
+        description nullable: true
     }
 
     static mapping = {

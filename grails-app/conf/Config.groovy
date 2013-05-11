@@ -90,3 +90,18 @@ log4j = {
            'net.sf.ehcache.hibernate'
     debug 'izitag.backend.apiController'
 }
+
+grails {
+    mail {
+        host = "in.mailjet.com"
+        port = 465
+        username = "4ffecf6a46de722553e1b77b73405a91"
+        password = "c00615c47d0e38d9f87618f8adc9bec6"
+        props = [
+                "mail.smtp.auth":"true",
+                "mail.smtp.socketFactory.port":"465",
+                "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
+                "mail.smtp.socketFactory.fallback":"false"
+                ]
+    }
+}
