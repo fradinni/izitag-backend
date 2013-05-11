@@ -24,9 +24,12 @@ class ApiController {
             render([message : "Tag already exists"] as JSON)
         }
         else {
-            tag = new Tag(name:params.name,tagID: params.tagId, user : user)
+            tag = new Tag(name : params.name , tagID : params.tagId , user : user)
             if(!tag.save()){
                 log.error "There was an error while saving tag : [${params.tagId} - ${params.name}]"
+                tag.errors.each {
+                    println it
+                }
                 render ([message : "there was an error while saving tag : [${params.tagId} - ${params.name}]"] as JSON)
             }
             render ([message : "tag created : [${params.tagId} - ${params.name}]"] as JSON)

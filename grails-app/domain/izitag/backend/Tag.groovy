@@ -4,13 +4,14 @@ class Tag {
 
     String tagID
 
-    String Name
+    String name
 
     static hasOne = [user : User , action : Action]
 
 
     static constraints = {
-
+       user nullable: true
+       action nullable: true
     }
 
     static mapping = {
