@@ -188,6 +188,12 @@ class ApiController {
                 event.endDate = new Date()
                 event.isCurrent = false
                 event.save(failOnError: true)
+                sendMail {
+                    from "serty2@gmail.com"
+                    to user.email
+                    subject "Vous avez débloqué votre reward chez ${tag.merchant.name}"
+                    body "Votre promotion est la suivante : ${tag.merchant.reward.description}\n votre code promo personel est : ${codePromo.code}"
+                }
                 def response = [codePromo:codePromo, event:event, tag: tag]
                 render response as JSON
                 return
