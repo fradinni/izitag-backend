@@ -183,7 +183,7 @@ class ApiController {
             }
 
             if(event.counter >= tag.treshold) {
-                // TODO : SEND A MAIL
+
                 def codePromo = codePromoService.createCodePromo(user,tag.merchant)
                 event.endDate = new Date()
                 event.isCurrent = false
