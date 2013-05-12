@@ -25,6 +25,7 @@ class ApiController {
             println userMerchants.unique()
             def merchantsList = Merchant.findAllByIdInList(userMerchants.unique()*.id)
             render(merchantsList as JSON)
+            //tes
         }
         else {
             render(Merchant.list() as JSON)
