@@ -10,7 +10,7 @@ class BootStrap {
     def codePromoService
 
     def init = { servletContext ->
-
+        /*
         def firstMerchant = Merchant.findByName("Castorama")
         if(!firstMerchant) {
             firstMerchant = new Merchant(name:"Castorama" ,adress: "12 rue du louvre", codePostal: "75001" , city: "Paris" , imgUrl:"http://www.mes-soldes.com/wp-content/logos/logo-castorama.gif" )
@@ -38,6 +38,7 @@ class BootStrap {
             firstUser.save(flush: true, failOnError: true)
         }
         /***************/
+        /*
         // Ajout Starbucks
         def secondMerchant = Merchant.findByName("Starbucks Opéra")
         if(!secondMerchant) {
@@ -57,7 +58,7 @@ class BootStrap {
             secondTag.save(flush: true, failOnError: true)
         }
         //firstUser.addToMerchants(firstMerchant)
-        //firstUser.addToMerchants(secondMerchant)
+        //firstUser.addToMerchants(secondMerchant)*/
     }
 
     def destroy = { //
