@@ -22,4 +22,5 @@ class Merchant {
     static mapping = {
         version false
     }
+
 }

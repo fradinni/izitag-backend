@@ -20,4 +20,5 @@ class User {
     static mapping = {
         version false
     }
+
 }

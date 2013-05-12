@@ -17,4 +17,5 @@ class Tag {
     static mapping = {
         version false
     }
+
 }

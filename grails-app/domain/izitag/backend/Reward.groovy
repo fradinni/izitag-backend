@@ -12,4 +12,5 @@ class Reward {
 
     static constraints = {
     }
+
 }

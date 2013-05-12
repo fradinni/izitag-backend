@@ -25,5 +25,7 @@ class Event {
     static mapping = {
         version false
     }
+
+
 }
 
