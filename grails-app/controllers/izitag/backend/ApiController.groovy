@@ -169,12 +169,13 @@ class ApiController {
 
         }
         else {
+            event.counter++
             if(event.counter == (tag.treshold -1)) {
                 //println "sending mail"
                 sendMail {
                     from "serty2@gmail.com"
                     to user.email
-                    subject "Vous avez une nouvelle promotion chez ${tag.merchant.name}"
+                    subject "Plus qu'une visite avant une promotion chez ${tag.merchant.name}"
                     body "Votre promotion est la suivante : ${tag.merchant.reward.description}"
                 }
 
@@ -191,7 +192,7 @@ class ApiController {
                 return
             }
             else {
-                event.counter++
+
                 event.save(failOnError: true)
                 render([event:event, tag:tag] as JSON)
             }
