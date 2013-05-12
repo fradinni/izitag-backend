@@ -1,7 +1,7 @@
 package izitag.backend
 
 import grails.converters.JSON
-import org.hibernate.FetchMode
+
 
 class ApiController {
 
@@ -20,7 +20,11 @@ class ApiController {
                 render([userNotExists:true] as JSON)
                 return
             }
-           render(user.merchants as JSON)
+            def userTags = Event.findAllByUser(user)*.tag
+            def userMerchants = userTags*.merchant
+            println userMerchants.unique()
+            def merchantsList = Merchant.findAllByIdInList(userMerchants.unique()*.id)
+            render(merchantsList as JSON)
         }
         else {
             render(Merchant.list() as JSON)
@@ -81,6 +85,20 @@ class ApiController {
     }
 
     // Liste des codes promos non utilisés par userId (le retour JSON doit contenir les infos du merchant)
+    // /api/code?codeId=1
+    def code(){
+        if(!params.codeId){
+            render([missingParameter:"codeId"] as JSON)
+            return
+        }
+
+        def code = CodePromo.findById(params.codeId)
+
+        render (code as JSON)
+    }
+
+
+    // Liste des codes promos non utilisés par userId (le retour JSON doit contenir les infos du merchant)
     // /api/codes?userId=1
     def codes(){
         if(!params.userId){
@@ -92,11 +110,13 @@ class ApiController {
             render([userNotExists:true] as JSON)
             return
         }
+        def userTags = Event.findAllByUser(user)*.tag
+        def userMerchants = userTags*.merchant
+        println userMerchants.unique()
+        def merchantsList = Merchant.findAllByIdInList(userMerchants.unique()*.id)
+        //def codes = CodePromo.findAllByUserAndIsConsumed(user, false)
 
-        def codes = CodePromo.findAllByUserAndIsConsumed(user, false)
-
-        render ([codes : codes, merchant: user.merchants] as JSON)
-
+        render ([codes : user.codes, merchant: merchantsList] as JSON)
     }
 
     // Chekin par tagId : lorsqu'on checkin on incrément un compteur jusquà un treshold
@@ -124,13 +144,29 @@ class ApiController {
         }
 
         def event = Event.findByIsCurrentAndUserAndTag(true,user,tag)
-
         if (!event){
+            //TODO : virer cet immondice quand on refera le modele correctement
+            //def merchant = Merchant.findById(tag.merchant.id)
+            //def reward = Reward.findByMerchant(merchant)
+            //println "tag ID : "  + tag.tagId
+            //merchant.tag = tag
+            //merchant.reward = reward
+            //if(!user.merchants?.contains(merchant))
+            //{
+            //    println "Merchant tag ID : "  + merchant.tag.tagId
+            //    user.addToMerchants(merchant)
+            //    user.save(failOnError: true)
+            //}
+            //user = User.findById(params.userId)
+            //tag = Tag.findByTagId(params.tagId)
+            // Fin TODO
             event = new Event(user : user, tag : tag, isCurrent: true)
             println "event tag " + event.tag
             event.counter++
-            event.save(flush: true, failOnError: true)
+            event.save(failOnError: true)
             render([event:event, tag:tag] as JSON)
+            return
+
         }
         else {
             if(event.counter == (tag.treshold -1)) {
@@ -149,14 +185,14 @@ class ApiController {
                 def codePromo = codePromoService.createCodePromo(user,tag.merchant)
                 event.endDate = new Date()
                 event.isCurrent = false
-                event.save(flush: true,failOnError: true)
+                event.save(failOnError: true)
                 def response = [codePromo:codePromo, event:event, tag: tag]
                 render response as JSON
                 return
             }
             else {
                 event.counter++
-                event.save(flush: true,failOnError: true)
+                event.save(failOnError: true)
                 render([event:event, tag:tag] as JSON)
             }
         }

@@ -8,7 +8,8 @@ class Tag {
 
     int treshold
 
-    static belongsTo = [ merchant : Merchant ]
+    Merchant merchant
+    //static belongsTo = [ merchant : Merchant ]
 
 
     static constraints = {

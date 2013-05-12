@@ -34,7 +34,7 @@ class BootStrap {
         if (!firstUser)
         {
             firstUser = new User(email : "damien.pacaud@gmail.com", password: "test")
-            firstUser.addToMerchants(firstMerchant)
+            //firstUser.addToMerchants(firstMerchant)
             firstUser.save(flush: true, failOnError: true)
         }
         /***************/
@@ -56,7 +56,8 @@ class BootStrap {
             secondTag =  new Tag(tagId: "BOUYASTARBUCKS" , name: "Tag Fidelité Starbucks Opéra", merchant: secondMerchant, treshold : 3 )
             secondTag.save(flush: true, failOnError: true)
         }
-
+        //firstUser.addToMerchants(firstMerchant)
+        //firstUser.addToMerchants(secondMerchant)
     }
 
     def destroy = { //

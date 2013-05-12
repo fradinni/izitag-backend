@@ -1,5 +1,7 @@
 package izitag.backend
 
+import liquibase.integration.ant.MarkNextChangeSetRanTask
+
 class Reward {
 
     String name
@@ -7,8 +9,8 @@ class Reward {
     String description
 
     boolean isActif
-
-    static belongsTo = [merchant : Merchant]
+    Merchant merchant
+    //static belongsTo = [merchant : Merchant]
 
     static constraints = {
     }

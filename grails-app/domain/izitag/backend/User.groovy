@@ -8,12 +8,11 @@ class User {
 
     List<Event> events
 
-    List<Merchant> merchants
+    List<CodePromo> codes
 
-    static hasMany = [events : Event , merchants : Merchant]
+    static hasMany = [events : Event , codes : CodePromo]
 
     static constraints = {
-        merchants nullable: true
         events nullable: true
     }
 

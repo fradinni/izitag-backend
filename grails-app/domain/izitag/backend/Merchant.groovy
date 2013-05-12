@@ -14,6 +14,8 @@ class Merchant {
 
     static hasOne = [reward : Reward , tag : Tag ]
 
+    static hasMany = [codes:CodePromo]
+
     static constraints = {
         reward nullable: true
         tag nullable: true
